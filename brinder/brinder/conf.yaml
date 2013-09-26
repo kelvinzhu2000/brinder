@@ -9,9 +9,9 @@ common:
         port:     8889
     debug: true
     media:
-        root:         ''
-        url:          ''
-        admin_prefix: ''
+        root:         '/Users/kelvin/Documents/projects/other/brinder/project/media'
+        url:          '/media/'
+        admin_prefix: '/media/'
     use_runserver: true
-    use_south: false
+    use_south: true
     secret_key: 'k&z%*ssipp1s=bn^^%tof7ux8((r!95=zyjj@+=sa48#nyz2ok'
