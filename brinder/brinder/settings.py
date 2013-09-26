@@ -1,6 +1,38 @@
 # Django settings for brinder project.
 
-DEBUG = True
+import yaml
+import os
+
+def get_conf(yaml_path):
+    yfile = file(yaml_path, 'r')
+
+    yconf = yaml.load(yfile)
+    conf = {}
+    db_conf = {}
+
+    if 'common' in yconf:
+
+        common = yconf['common']
+
+        # everything else should map 1-to-1
+        conf.update(common)
+
+    return conf
+
+PROJECT_PATH = os.path.join(os.path.dirname(__file__), '')
+CONF_PATH = 'conf.yaml'
+
+ENV_CONF_PATH = os.path.join(PROJECT_PATH, CONF_PATH)
+
+env_conf            = get_conf(ENV_CONF_PATH)
+env_db_conf         = env_conf['db']
+env_debug_conf      = env_conf['debug']
+env_media_conf      = env_conf['media']
+env_secret_key_conf = env_conf['secret_key']
+env_runserver_conf  = env_conf['use_runserver']
+env_south_conf      = env_conf['use_south']
+
+DEBUG = env_debug_conf
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -11,19 +43,15 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'brinder',                      # Or path to database file if using sqlite3.
+        'ENGINE': env_db_conf['engine'], # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': env_db_conf['name'],                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'brinder_admin',
-        'PASSWORD': 'password',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '8889',                      # Set to empty string for default.
+        'USER': env_db_conf['user'],
+        'PASSWORD': env_db_conf['password'],
+        'HOST': env_db_conf['host'],                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': env_db_conf['port'],                      # Set to empty string for default.
     }
 }
-
-# Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -50,29 +78,17 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = env_media_conf['root']
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = env_media_conf['url']
 
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
-
-# URL prefix for static files.
-# Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
-
-# Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+# URL prefix for admin media -- CSS, Javascript and images. Make sure to use a
+# trailing slash.
+# Examples: "http://foo.com/media/", "/media/"
+ADMIN_MEDIA_PREFIX = env_media_conf['admin_prefix']
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -83,7 +99,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'k&z%*ssipp1s=bn^^%tof7ux8((r!95=zyjj@+=sa48#nyz2ok'
+SECRET_KEY = env_secret_key_conf
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -104,8 +120,9 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'brinder.urls'
 
-# Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'brinder.wsgi.application'
+if env_runserver_conf:
+    # Python dotted path to the WSGI application used by Django's runserver.
+    WSGI_APPLICATION = 'brinder.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -113,46 +130,22 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+if env_south_conf:
+    south = 'south'
+else:
+    # using this module as a dummy one in case we can't use south
+    south = 'django.contrib.admindocs'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'brinder',
-    'south',
+    south,
 )
-
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}

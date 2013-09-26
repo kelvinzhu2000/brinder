@@ -1,0 +1,17 @@
+---
+common:
+    db:
+        engine:   django.db.backends.mysql
+        name:     brinder
+        user:     brinder_admin
+        password: password
+        host:     ''
+        port:     8889
+    debug: true
+    media:
+        root:         ''
+        url:          ''
+        admin_prefix: ''
+    use_runserver: true
+    use_south: false
+    secret_key: 'k&z%*ssipp1s=bn^^%tof7ux8((r!95=zyjj@+=sa48#nyz2ok'
