@@ -5,11 +5,11 @@ common:
         name:     brinder
         user:     brinder_admin
         password: password
-        host:     ''
-        port:     8889
+        host:     localhost
+        port:     ''
     debug: true
     media:
-        root:         '/Users/kelvin/Documents/projects/other/brinder/project/media'
+        root:         '/usr/home/kelvin/tmp2/brinder/media'
         url:          '/media/'
         admin_prefix: '/media/'
     use_runserver: true

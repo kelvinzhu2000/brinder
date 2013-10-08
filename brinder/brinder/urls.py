@@ -1,4 +1,6 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
+
+from surveys import views
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -6,12 +8,13 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # (r'^$', 'brinder.views.home', name='home'),
-    # (r'^brinder/', include('brinder.foo.urls')),
+    # url(r'^$', 'brinder.views.home', name='home'),
+    url(r'^surveys/', include('surveys.urls')),
+    url(r'^privacy/', views.privacy, name='privacy'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
-    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    (r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 )
