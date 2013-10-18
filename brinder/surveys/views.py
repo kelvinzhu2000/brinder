@@ -21,3 +21,7 @@ def privacy(request):
 def terms(request):
     f = open('surveys/staticpages/terms.html','r')
     return HttpResponse(f.read())
+
+def contact(request):
+    f = open('surveys/staticpages/contact.html','r')
+    return HttpResponse(f.read())
