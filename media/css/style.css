@@ -1,0 +1,131 @@
+/* 
+    Document   : style
+    Created on : Sep 21, 2013, 12:50:49 AM
+    Author     : Yen
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+body
+{
+    text-align: center;
+    background-color:cornsilk;
+}
+.load-button
+{
+    width:202px;
+    height:36px;
+    background-image: url(../img/home/LoginWithFacebook.gif);
+    margin:auto;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+#content{
+     display:none;
+}
+
+#friend_select{
+    display:none;
+}
+.facebook-friends
+{
+    width: 500px;
+    height:400px;
+    margin: auto;
+    text-align: left;
+    margin-bottom: 30px;
+    margin-top: 20px;
+    overflow-y: scroll;
+    border-style:groove;
+}
+.facebook-friends img
+{
+    width:76px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    height:76px;
+    
+}
+
+.facebook-friends .friend_info .friend_name{
+    font-weight: bold;
+    font-size:14px;
+}
+.facebook-friends .friend_info{
+    width:380px;
+    text-align:left;
+    float:right;
+}
+
+.facebook-friends .friend{
+    display:block;
+    height:80px;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 1px;
+    border-color:lightgray;
+}
+
+.facebook-friends .friend:hover{
+    background-color: bisque;
+}
+
+#form{
+    width:500px;
+}
+
+#form td{
+    vertical-align: top;
+    text-align: left;
+}
+
+.absolute_center{
+  margin: auto;
+}
+
+.friend_clicked{
+    background-color: wheat;
+}
+
+#recipients{
+    border-style:solid;
+    border-width: 1px;
+    width:400px;
+    height:50px;
+    border-color: grey;
+    overflow-y:scroll;
+    text-align: left;
+    background-color: white;
+}
+
+#banner{
+    margin:auto;
+    background-image: url('../img/home/Cover800.gif');
+    width: 800px;
+    height: 150px;
+}
+
+.recipient{
+    background-color: powderblue;
+    border:2px solid grey;
+    border-radius:25px;
+    font-weight: bold;
+    font-size:12px;
+}
+
+.message{
+    margin-top: 20px;
+    font-size: 36px;
+    font-family: 'Times New Roman', 'Arial';
+    color:hotpink;
+}
+
+#message_body{
+    width:500px;
+    height: 100px;
+}

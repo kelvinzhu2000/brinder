@@ -10,8 +10,8 @@ common:
     debug: true
     media:
         root:         '/usr/home/kelvin/tmp2/brinder/media'
-        url:          '/media/'
-        admin_prefix: '/media/'
+        url:          '/static/'
+        admin_prefix: '/static/'
     use_runserver: true
     use_south: true
     secret_key: 'k&z%*ssipp1s=bn^^%tof7ux8((r!95=zyjj@+=sa48#nyz2ok'

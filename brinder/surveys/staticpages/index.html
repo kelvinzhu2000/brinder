@@ -1,0 +1,213 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="static/css/style.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="static/js/libs/jquery-1.10.2/jquery-1.10.2.min.js"></script>
+        <script>
+            <!--
+            //facebook app id
+            var appid='165800920286994';
+            var friends = new Array();
+            var friendsByUsername = new Array();
+            function parseUser(response){
+                var user = new User(response.id, response.name, response.username, 
+                    response.picture.data.url, response.relationship_status);
+                
+                for(i = 0; i < response.friends.data.length; i++){
+                    var data = response.friends.data[i];
+                    var friend = new User(data.id,data.name, data.username,
+                                data.picture.data.url, data.relationship_status);
+                    if(typeof(friend.username) !== 'undefined'){
+                        friends[friends.length]= friend;
+                    
+                        friendsByUsername[friend.username] = friend;
+                    }
+                }
+                user.friends = friends;
+                return user;
+            }
+
+            function User(id, name, user, picture, relation){
+                this.name = name;
+                this.username = user;
+                this.picture = picture;
+                this.relationship = relation;
+                this.id = id;
+            }
+
+            
+            //function to get current userid
+            function getUser()
+            {
+                FB.init({
+                    appId      : appid, // App ID
+                    status     : true, // check login status
+                    cookie     : true, // enable cookies to allow the server to access the session
+                    xfbml      : true  // parse XFBML
+                });
+                //check current user login status
+                FB.getLoginStatus(function(response) {
+                    if (response.status === 'connected') {
+                        loadFriends();
+                    } else {
+                        //user is not connected.
+                        FB.login(function(response) {
+                            if (response.authResponse) {
+                                loadFriends();
+                            } else {
+                                alert('User cancelled login or did not fully authorize.');
+                            }
+                        });
+                    }
+                });
+            }
+
+            function showFriends(conditions){
+                var divContainer=$('.facebook-friends');
+                Outer: for(i=0;i<friends.length;i++)
+                {
+                    var friend = friends[i];
+                    
+                    for(var name in conditions){
+                        if(friend[name] !== conditions[name]){
+                            continue Outer;
+                        }
+                    }
+                    
+                    var img = $(document.createElement("img")).attr({ src: friend.picture, title: friend.name});
+                    var friend_div = $(document.createElement("div")).attr({class:"friend"});
+                    $(friend_div).click(friend,friendClicked);
+                    var info_div = $(document.createElement("div")).attr({class:"friend_info"});
+                    var name_div = $(document.createElement("div")).attr({class:"friend_name"}).html(friend.name);
+                    name_div.appendTo(info_div);
+                    if(friend.relationship){
+                        var relation_div = $(document.createElement("div")).attr({class:"friend_relationship"}).html(friend.relationship);
+                        relation_div.appendTo(info_div);
+                    }
+                    
+                    info_div.appendTo(friend_div);
+                    friend_div.appendTo(divContainer);
+                    img.appendTo(friend_div);
+                }
+            }
+            //function to load friends
+            function loadFriends()
+            {
+                //get array of friends
+                FB.api('/me?fields=id,name,username,relationship_status,friends.fields(picture,username,name,relationship_status),picture', function(response) {
+                    var divContainer=$('.facebook-friends');
+                    var user = parseUser(response);
+                   
+                    showFriends();
+                    $('.load-button').css("display","none");
+                    $('#content').css("display","block");
+                    
+                });
+            }
+            var selected = new Array();
+            
+            function friendClicked(event){
+                var username = event.data.username;
+                if(typeof(username) === 'undefined')
+                    return;
+                var index = selected.indexOf(username);
+                if( index < 0){
+                    selected.push(username);
+                    $("#friend_select").append('<option value="'+username+'" selected="selected">'+username+'</option>');
+                    $(this).addClass("friend_clicked");
+                }
+                else{
+                    selected.splice(index, 1);
+                    $("#friend_select").children('option:contains('+username+')').remove();
+                    $(this).removeClass("friend_clicked");
+                }
+                var users = "";
+                for(var i = 0; i < selected.length; i++){
+                     users+= '<span class="recipient">'+friendsByUsername[selected[i]].name + "</span> ,";
+                }
+                $("#recipients").html(users);
+            }
+            //start from here
+            $(document).ready(function(){
+                $('.load-button').click(function(){
+                    getUser();
+                });
+                
+                var users = "";
+                for(var i = 0; i < selected.length; i++){
+                     users+= friendsByUsername[selected[i]].name+", ";
+                }
+                
+                $('#submit_button').click(function(){
+                    alert("Your message is sent to "+ users);
+                });
+                
+                String.prototype.trim = function()
+                {
+                    return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+                };
+            });
+            
+            
+            
+           
+
+            -->
+        </script>
+    </head>
+    <body>
+       
+        <div id="banner">
+            
+        </div>
+       
+        
+        <div class="load-button"></div>
+        <select id="friend_select"></select>
+        <div id="content">
+            <div class="message">
+                Select friends you would like their suggestions from.
+            </div>
+            <div class="facebook-friends">
+            </div>
+            <div id="form" class="absolute_center">
+                <table>
+                    <tr>
+                        <td>
+                            Recipient(s):
+                        </td>
+                        <td>
+                            <div id="recipients"> </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            Your Message:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <textarea id="message_body" name="body"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="submit_button" value="Submit" type="button" />
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <script src="http://connect.facebook.net/en_US/all.js"></script>
+        
+    </body>
+</html>

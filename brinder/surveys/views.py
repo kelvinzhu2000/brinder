@@ -2,7 +2,8 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello, world. You're at the surveys index.")
+    f = open('surveys/staticpages/index.html','r')
+    return HttpResponse(f.read())
 
 def detail(request, question_id):
     return HttpResponse("You're looking at question %s." % question_id)

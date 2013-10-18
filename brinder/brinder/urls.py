@@ -9,6 +9,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'brinder.views.home', name='home'),
+    url(r'^$', views.index, name='index'),
     url(r'^surveys/', include('surveys.urls')),
     url(r'^privacy/', views.privacy, name='privacy'),
     url(r'^terms/', views.terms, name='terms'),
