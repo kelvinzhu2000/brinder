@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^surveys/', include('surveys.urls')),
     url(r'^privacy/', views.privacy, name='privacy'),
     url(r'^terms/', views.terms, name='terms'),
+    url(r'^contact/', views.terms, name='contact'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
