@@ -10,6 +10,7 @@ common:
     debug: true
     media:
         root:         '/usr/home/kelvin/tmp2/brinder/media'
+        dir:          '/usr/home/kelvin/tmp2/brinder/static'
         url:          '/static/'
         admin_prefix: '/static/'
     use_runserver: true
