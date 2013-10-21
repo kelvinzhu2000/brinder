@@ -4,35 +4,32 @@ import datetime
 from django.utils import timezone
 
 # Create your models here.
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
-
-    def __unicode__(self):
-        return self.question_text
-
-    def was_published_recently(self):
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
-    was_published_recently.admin_order_field = 'pub_date'
-    was_published_recently.boolean = True
-    was_published_recently.short_description = 'Published recently?'
-
-class Choice(models.Model):
-    question = models.ForeignKey(Question)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
-
-    def __unicode__(self):
-        return self.choice_text
 
 # The survey package. Essentially a wrapper to contain a set of questions
 class Survey(models.Model):
     name = models.CharField(max_length=200)
 
 # The individual survey questions
-class NewQuestion(models.Model):
-    survey   = models.ForeignKey(Survey)
-    question = models.CharField(max_length=200)
+class Question(models.Model):
+    TRUEFALSE   = 'TF'
+    DROPDOWN    = 'DD'
+    EXPLANATION = 'E'
+    RADIOBUTTON = 'RB'
+    MULTIPLE    = 'M'
+
+    QUESTION_TYPE_CHOICES = (
+        (TRUEFALSE, 'True/False'),
+        (DROPDOWN, 'Dropdown'),
+        (EXPLANATION, 'Explanation'),
+        (RADIOBUTTON, 'Radio Button'),
+        (MULTIPLE, 'Choose Multiple'),
+    )
+    survey       = models.ForeignKey(Survey)
+    rank         = models.IntegerField()
+    question     = models.CharField(max_length=200)
+    question_type = models.CharField(max_length=2,
+                                     choices=QUESTION_TYPE_CHOICES,
+                                     default=TRUEFALSE)
 
 # The facebook id associated with a user
 class FacebookId(models.Model):
@@ -45,10 +42,11 @@ class Message(models.Model):
     recipient = models.ForeignKey(User, related_name='recipient')
     survey    = models.ForeignKey(Survey)
     status    = models.CharField(max_length=30)
+    url       = models.SlugField(max_length=30)
 
 # A recipient response to a survey question
 class Answer(models.Model):
-    question = models.ForeignKey(NewQuestion)
+    question = models.ForeignKey(Question)
     message  = models.ForeignKey(Message)
     value    = models.IntegerField(default=0)
     comment  = models.TextField()
