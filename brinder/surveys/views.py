@@ -5,6 +5,10 @@ def index(request):
     f = open('surveys/staticpages/index.html','r')
     return HttpResponse(f.read())
 
+def survey(request):
+    f = open('surveys/staticpages/survey.html','r')
+    return HttpResponse(f.read())
+
 def privacy(request):
     f = open('surveys/staticpages/privacy.html','r')
     return HttpResponse(f.read())
