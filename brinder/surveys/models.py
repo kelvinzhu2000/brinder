@@ -39,7 +39,7 @@ class Choice(models.Model):
     text = models.CharField(max_length=200)
 
     def __unicode__(self):
-        return self.choice_text
+        return self.text
 
 # The data for various kinds of survey questions
 class TrueFalseQuestion(Question):

@@ -2,7 +2,7 @@ from django.contrib import admin
 from surveys.models import Survey, Question, TrueFalseQuestion, \
     DropDownQuestion, DropDownChoice, OrderingQuestion, OrderingChoice, \
     ExplanationQuestion, RadioButtonQuestion, RadioButtonChoice, \
-    MultipleChoiceQuestion, MultipleChoiceChoice
+    MultipleChoiceQuestion, MultipleChoiceChoice, Message
 
 class QuestionInline(admin.TabularInline):
     model = Question
@@ -46,6 +46,9 @@ class MultipleChoiceInline(admin.TabularInline):
 class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
     inlines = [MultipleChoiceInline]
 
+class MessageAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(TrueFalseQuestion, TrueFalseQuestionAdmin)
 admin.site.register(DropDownQuestion, DropDownQuestionAdmin)
@@ -53,6 +56,7 @@ admin.site.register(OrderingQuestion, OrderingQuestionAdmin)
 admin.site.register(ExplanationQuestion, ExplanationQuestionAdmin)
 admin.site.register(RadioButtonQuestion, RadioButtonQuestionAdmin)
 admin.site.register(MultipleChoiceQuestion, MultipleChoiceQuestionAdmin)
+admin.site.register(Message, MessageAdmin)
 #class ChoiceInline(admin.TabularInline):
 #    model = Choice
 #    extra = 3

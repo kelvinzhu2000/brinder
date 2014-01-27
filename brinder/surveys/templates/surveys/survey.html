@@ -1,0 +1,13 @@
+{% if message %}
+    <h1>{{ message.survey.name }}</h1>
+
+    {% if error_message %} <p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <form action="{% url 'surveys:survey' message.url %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+    </form>
+{% else %}
+    <p>Invalid survey.</p>
+{% endif %}

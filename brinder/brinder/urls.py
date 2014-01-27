@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'brinder.views.home', name='home'),
     url(r'^$', views.index, name='index'),
-    url(r'^surveys/', include('surveys.urls')),
+    url(r'^surveys/', include('surveys.urls', namespace="surveys")),
     url(r'^privacy/', views.privacy, name='privacy'),
     url(r'^terms/', views.terms, name='terms'),
     url(r'^contact/', views.contact, name='contact'),
