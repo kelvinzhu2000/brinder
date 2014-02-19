@@ -13,16 +13,19 @@ and open the template in the editor.
             <!--
             //facebook app id
             var appid='587884284608902';
-            var friends = new Array();
+           var friends = new Array();
             var friendsByUsername = new Array();
+            var user = null;
             function parseUser(response){
                 var user = new User(response.id, response.name, response.username, 
-                    response.picture.data.url, response.relationship_status);
+                    response.gender,response.picture.data.url, 
+                    response.relationship_status);
                 
                 for(i = 0; i < response.friends.data.length; i++){
                     var data = response.friends.data[i];
                     var friend = new User(data.id,data.name, data.username,
-                                data.picture.data.url, data.relationship_status);
+                                data.gender, data.picture.data.url, 
+                                data.relationship_status,data.location);
                     if(typeof(friend.username) !== 'undefined'){
                         friends[friends.length]= friend;
                     
@@ -33,11 +36,13 @@ and open the template in the editor.
                 return user;
             }
 
-            function User(id, name, user, picture, relation){
+            function User(id, name, user, gender, picture, relation,location){
                 this.name = name;
                 this.username = user;
+                this.gender = gender;
                 this.picture = picture;
                 this.relationship = relation;
+                this.location = location;
                 this.id = id;
             }
 
@@ -57,19 +62,15 @@ and open the template in the editor.
                         loadFriends();
                     } else {
                         //user is not connected.
-                        FB.login(function(response) {
-                            if (response.authResponse) {
-                                loadFriends();
-                            } else {
-                                alert('User cancelled login or did not fully authorize.');
-                            }
-                        });
+                        var uri = encodeURI(window.location.href);
+						window.location = encodeURI("https://www.facebook.com/dialog/oauth?client_id="+appid+"&redirect_uri="+uri+"&response_type=token");
                     }
                 });
             }
 
             function showFriends(conditions){
                 var divContainer=$('.facebook-friends');
+                $('.facebook-friends').html('');
                 Outer: for(i=0;i<friends.length;i++)
                 {
                     var friend = friends[i];
@@ -86,9 +87,17 @@ and open the template in the editor.
                     var info_div = $(document.createElement("div")).attr({class:"friend_info"});
                     var name_div = $(document.createElement("div")).attr({class:"friend_name"}).html(friend.name);
                     name_div.appendTo(info_div);
+                    var gender_div = $(document.createElement("div")).attr({class:"friend_gender"}).html(friend.gender);
+                    gender_div.appendTo(info_div);
+                    
                     if(friend.relationship){
                         var relation_div = $(document.createElement("div")).attr({class:"friend_relationship"}).html(friend.relationship);
                         relation_div.appendTo(info_div);
+                    }
+                    
+                    if(friend.location){
+                        var loc_div = $(document.createElement("div")).attr({class:"friend_location"}).html(friend.location.name);
+                        loc_div.appendTo(info_div);
                     }
                     
                     info_div.appendTo(friend_div);
@@ -100,9 +109,9 @@ and open the template in the editor.
             function loadFriends()
             {
                 //get array of friends
-                FB.api('/me?fields=id,name,username,relationship_status,friends.fields(picture,username,name,relationship_status),picture', function(response) {
+                FB.api('/me?fields=id,name,username,gender,relationship_status,friends.fields(picture,username,gender,name,relationship_status,location),picture', function(response) {
                     var divContainer=$('.facebook-friends');
-                    var user = parseUser(response);
+                    user = parseUser(response);
                    
                     showFriends();
                     $('.load-button').css("display","none");
@@ -145,6 +154,28 @@ and open the template in the editor.
                 }
                 
                 $('#submit_button').click(function(){
+                    
+                    var options = $('#friend_select option');
+                    var values = $.map(options ,function(option) {
+                        return option.value;
+                    });
+                    
+                    
+                    
+                    var users = new Array();
+                    
+                    for(var i in values){
+                        users[users.length] = friendsByUsername[values[i]].id;
+                        //users += values[i]+"@facebook.com, ";
+                    }
+                    
+                    FB.ui({
+                        method: 'send',
+                        link: 'http://kelvinzhu.com',
+                        caption: user.name + ' needs your suggestions about wedding!',
+                        to: users[0]
+                      }, function(response){alert(response.post_id);});
+
                     alert("Your message is sent to "+ users);
                 });
                 

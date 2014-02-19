@@ -85,6 +85,10 @@ STATIC_ROOT = env_media_conf['root']
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = env_media_conf['url']
 
+
+LOGIN_URL = '/accounts/login'
+LOGIN_REDIRECT_URL = '/'
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -151,5 +155,9 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'surveys',
+    'emails',
+    'registration',
     south,
 )
+
+
