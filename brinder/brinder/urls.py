@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^privacy/', views.privacy, name='privacy'),
     url(r'^terms/', views.terms, name='terms'),
     url(r'^contact/', views.contact, name='contact'),
-    url(r'^sendEmail/', sendEmail.sendToRecipients, name='sendEmail')
+    url(r'^sendEmail/', sendEmail.sendToRecipients, name='sendEmail'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
