@@ -3,6 +3,31 @@ import random
 import string
 #import surveys.models import Message
 
+import yaml
+import os
+
+def get_conf(yaml_path):
+    yfile = file(yaml_path, 'r')
+
+    yconf = yaml.load(yfile)
+    conf = {}
+
+    if 'common' in yconf:
+        common = yconf['common']
+
+        # everything else should map 1-to-1
+        conf.update(common)
+
+    return conf
+
+PROJECT_PATH = os.path.join(os.path.dirname(__file__), '../brinder')
+CONF_PATH = 'conf.yaml'
+
+ENV_CONF_PATH = os.path.join(PROJECT_PATH, CONF_PATH)
+
+env_conf            = get_conf(ENV_CONF_PATH)
+env_email_conf      = env_conf['email']
+
 class BrinderMail:
     """
         A simple email conponent. Initialize as 
@@ -12,10 +37,10 @@ class BrinderMail:
         senders, use sendAfterSurveyComplete() 
     """
     __smtpHost = 'smtp.gmail.com:587' #SMTP server default to be gmail
-    __companyEmail = '' #company email address
+    __companyEmail = env_email_conf['email'] #company email address
     __companyDomain = 'brinder.com' #domain of the company
-    __username = '' #account name of company email
-    __password = '' #input the password of company email
+    __username = env_email_conf['user'] #account name of company email
+    __password = env_email_conf['password'] #input the password of company email
     __subject = 'My wedding help request' #subject of the email
     
     #header template for email
