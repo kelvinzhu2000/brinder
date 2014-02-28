@@ -3,6 +3,7 @@ from django.http import HttpResponse
 import BrinderMail
 
 def sendToRecipients(request):
+    """
     if request.method == "POST":
         message_body = request.POST['message']
         names = request.POST['name_list']
@@ -13,3 +14,4 @@ def sendToRecipients(request):
 
         newMail = BrinderMail(names, emails, senderName, senderEmail, message_body)
         return HttpResponse(newMail.sendHelpRequest())
+    """
