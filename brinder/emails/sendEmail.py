@@ -11,5 +11,5 @@ def sendToRecipients(request):
         senderName = "chaoyan" #for test
         senderEmail = "aceyan8996@gmail.com"
 
-        newMail = BrinderMail(names, emails, senderName, senderEmail)
+        newMail = BrinderMail(names, emails, senderName, senderEmail, message_body)
         return HttpResponse(newMail.sendHelpRequest())
