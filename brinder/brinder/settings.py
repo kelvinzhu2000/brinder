@@ -155,7 +155,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'surveys',
     'emails',
-    'registration',
+    'brinderregistration',
     south,
 )
 

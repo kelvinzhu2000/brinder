@@ -36,12 +36,12 @@ class BrinderMail:
         After receivers submit surveys, sending thank you email to receivers, or sending notifications to
         senders, use sendAfterSurveyComplete() 
     """
-    __smtpHost = 'smtp.gmail.com:587' #SMTP server default to be gmail
+    __smtpHost = env_email_conf['host'] #SMTP server default to be gmail
     __companyEmail = env_email_conf['email'] #company email address
-    __companyDomain = 'brinder.com' #domain of the company
+    __companyDomain = env_email_conf['domain'] #domain of the company
     __username = env_email_conf['user'] #account name of company email
     __password = env_email_conf['password'] #input the password of company email
-    __subject = 'My wedding help request' #subject of the email
+    __subject = env_email_conf['subject'] #subject of the email
     
     #header template for email
     __header = 'From: {0} <{1}>\nTo: {2} <{3}>\nMIME-Version: 1.0\nContent-type: text/html\nSubject: {4}\n\n'
