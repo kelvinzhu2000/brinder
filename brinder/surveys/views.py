@@ -4,11 +4,12 @@ from django.template import RequestContext, loader
 from surveys.models import Message, Survey, Question
 from surveys.forms import SurveyForm
 
-# Create your views here.
+@login_required
 def index(request):
     f = open('surveys/staticpages/index.html','r')
     return HttpResponse(f.read())
 
+@login_required
 def survey(request, message_url):
     message = Message.objects.get(url=message_url)
     questions = message.survey.question_set.all()

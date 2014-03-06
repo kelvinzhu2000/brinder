@@ -13,22 +13,24 @@ and open the template in the editor.
             <!--
             //facebook app id
             var appid='587884284608902';
-           var friends = new Array();
+            var friends = new Array();
             var friendsByUsername = new Array();
+            var emails = new Array();
+            var names = new Array();
             var user = null;
-            function parseUser(response){
-                var user = new User(response.id, response.name, response.username, 
-                    response.gender,response.picture.data.url, 
-                    response.relationship_status);
-                
-                for(i = 0; i < response.friends.data.length; i++){
+            function parseUser(response) {
+                var user = new User(response.id, response.name, response.username,
+                        response.gender, response.picture.data.url,
+                        response.relationship_status);
+
+                for (i = 0; i < response.friends.data.length; i++) {
                     var data = response.friends.data[i];
-                    var friend = new User(data.id,data.name, data.username,
-                                data.gender, data.picture.data.url, 
-                                data.relationship_status,data.location);
-                    if(typeof(friend.username) !== 'undefined'){
-                        friends[friends.length]= friend;
-                    
+                    var friend = new User(data.id, data.name, data.username,
+                            data.gender, data.picture.data.url,
+                            data.relationship_status, data.location);
+                    if (typeof (friend.username) !== 'undefined') {
+                        friends[friends.length] = friend;
+
                         friendsByUsername[friend.username] = friend;
                     }
                 }
@@ -36,7 +38,7 @@ and open the template in the editor.
                 return user;
             }
 
-            function User(id, name, user, gender, picture, relation,location){
+            function User(id, name, user, gender, picture, relation, location) {
                 this.name = name;
                 this.username = user;
                 this.gender = gender;
@@ -46,15 +48,15 @@ and open the template in the editor.
                 this.id = id;
             }
 
-            
+
             //function to get current userid
             function getUser()
             {
                 FB.init({
-                    appId      : appid, // App ID
-                    status     : true, // check login status
-                    cookie     : true, // enable cookies to allow the server to access the session
-                    xfbml      : true  // parse XFBML
+                    appId: appid, // App ID
+                    status: true, // check login status
+                    cookie: true, // enable cookies to allow the server to access the session
+                    xfbml: true  // parse XFBML
                 });
                 //check current user login status
                 FB.getLoginStatus(function(response) {
@@ -63,43 +65,43 @@ and open the template in the editor.
                     } else {
                         //user is not connected.
                         var uri = encodeURI(window.location.href);
-						window.location = encodeURI("https://www.facebook.com/dialog/oauth?client_id="+appid+"&redirect_uri="+uri+"&response_type=token");
+                        window.location = encodeURI("https://www.facebook.com/dialog/oauth?client_id=" + appid + "&redirect_uri=" + uri + "&response_type=token");
                     }
                 });
             }
 
-            function showFriends(conditions){
-                var divContainer=$('.facebook-friends');
+            function showFriends(conditions) {
+                var divContainer = $('.facebook-friends');
                 $('.facebook-friends').html('');
-                Outer: for(i=0;i<friends.length;i++)
+                Outer: for (i = 0; i < friends.length; i++)
                 {
                     var friend = friends[i];
-                    
-                    for(var name in conditions){
-                        if(friend[name] !== conditions[name]){
+
+                    for (var name in conditions) {
+                        if (friend[name] !== conditions[name]) {
                             continue Outer;
                         }
                     }
-                    
-                    var img = $(document.createElement("img")).attr({ src: friend.picture, title: friend.name});
-                    var friend_div = $(document.createElement("div")).attr({class:"friend"});
-                    $(friend_div).click(friend,friendClicked);
-                    var info_div = $(document.createElement("div")).attr({class:"friend_info"});
-                    var name_div = $(document.createElement("div")).attr({class:"friend_name"}).html(friend.name);
+
+                    var img = $(document.createElement("img")).attr({src: friend.picture, title: friend.name});
+                    var friend_div = $(document.createElement("div")).attr({class: "friend", "id": friend.username});
+                    $(friend_div).click(friend, friendClicked);
+                    var info_div = $(document.createElement("div")).attr({class: "friend_info"});
+                    var name_div = $(document.createElement("div")).attr({class: "friend_name"}).html(friend.name);
                     name_div.appendTo(info_div);
-                    var gender_div = $(document.createElement("div")).attr({class:"friend_gender"}).html(friend.gender);
+                    var gender_div = $(document.createElement("div")).attr({class: "friend_gender"}).html(friend.gender);
                     gender_div.appendTo(info_div);
-                    
-                    if(friend.relationship){
-                        var relation_div = $(document.createElement("div")).attr({class:"friend_relationship"}).html(friend.relationship);
+
+                    if (friend.relationship) {
+                        var relation_div = $(document.createElement("div")).attr({class: "friend_relationship"}).html(friend.relationship);
                         relation_div.appendTo(info_div);
                     }
-                    
-                    if(friend.location){
-                        var loc_div = $(document.createElement("div")).attr({class:"friend_location"}).html(friend.location.name);
+
+                    if (friend.location) {
+                        var loc_div = $(document.createElement("div")).attr({class: "friend_location"}).html(friend.location.name);
                         loc_div.appendTo(info_div);
                     }
-                    
+
                     info_div.appendTo(friend_div);
                     friend_div.appendTo(divContainer);
                     img.appendTo(friend_div);
@@ -110,95 +112,147 @@ and open the template in the editor.
             {
                 //get array of friends
                 FB.api('/me?fields=id,name,username,gender,relationship_status,friends.fields(picture,username,gender,name,relationship_status,location),picture', function(response) {
-                    var divContainer=$('.facebook-friends');
+                    var divContainer = $('.facebook-friends');
                     user = parseUser(response);
-                   
+
                     showFriends();
-                    $('.load-button').css("display","none");
-                    $('#content').css("display","block");
-                    
+                    $('.load-button').css("display", "none");
+                    $('#content').css("display", "block");
+
                 });
             }
             var selected = new Array();
-            
-            function friendClicked(event){
+
+            function friendClicked(event) {
                 var username = event.data.username;
-                if(typeof(username) === 'undefined')
+                if (typeof (username) === 'undefined')
                     return;
                 var index = selected.indexOf(username);
-                if( index < 0){
+
+                if (index < 0) {
+                    var recipient = $('<option value="' + username + '" selected="selected">' + username + '</option>');
                     selected.push(username);
-                    $("#friend_select").append('<option value="'+username+'" selected="selected">'+username+'</option>');
+                    $("#friend_select").append(recipient);
                     $(this).addClass("friend_clicked");
+                    index = selected.indexOf(username);
+                    var recipient = $('<span>').attr({class: 'recipient', id: friendsByUsername[username].id}).html(friendsByUsername[username].name);
+                    $(recipient).click(
+                            function(index, username, obj) {
+                                return function() {
+                                    selected.splice(index, 1);
+                                    $("#friend_select").children('option:contains(' + username + ')').remove();
+                                    $(obj).removeClass("friend_clicked");
+                                    $(this).remove();
+                                };
+                            }(index, username, this));
+                    recipient.appendTo($("#recipients"));
                 }
-                else{
+                else {
                     selected.splice(index, 1);
-                    $("#friend_select").children('option:contains('+username+')').remove();
+                    $("#friend_select").children('option:contains(' + username + ')').remove();
                     $(this).removeClass("friend_clicked");
+                    $('#' + friendsByUsername[username].id).remove();
                 }
-                var users = "";
-                for(var i = 0; i < selected.length; i++){
-                     users+= '<span class="recipient">'+friendsByUsername[selected[i]].name + "</span> ,";
-                }
-                $("#recipients").html(users);
             }
             //start from here
-            $(document).ready(function(){
-                $('.load-button').click(function(){
+            $(document).ready(function() {
+                $('.load-button').click(function() {
                     getUser();
                 });
-                
-                var users = "";
-                for(var i = 0; i < selected.length; i++){
-                     users+= friendsByUsername[selected[i]].name+", ";
-                }
-                
-                $('#submit_button').click(function(){
-                    
+
+                $("#add").click(function() {
+
+                    var email = $("#email").val();
+                    var name = $("#name").val();
+                    if (email.length === 0 ||
+                            name.length === 0) {
+                        alert("Email and Name can't be empty");
+                        return;
+                    }
+
+                    if (emails.indexOf(email) >= 0) {
+                        alert("Email is in the list");
+                        return;
+                    }
+
+                    emails.push(email);
+                    names.push(name);
+
+                    var recipient = $('<span>').attr({class: 'recipient'}).html(name);
+                    var index = emails.indexOf(email);
+                    $(recipient).click(
+                            function(index) {
+                                return function() {
+                                    emails.splice(index, 1);
+                                    names.splice(index, 1);
+                                    $(this).remove();
+                                };
+                            }(index));
+                    recipient.appendTo($("#recipients"));
+                });
+
+                $('#submit_button').click(function() {
+
                     var options = $('#friend_select option');
-                    var values = $.map(options ,function(option) {
+                    var values = $.map(options, function(option) {
                         return option.value;
                     });
-                    
-                    
-                    
-                    var users = new Array();
-                    
-                    for(var i in values){
-                        users[users.length] = friendsByUsername[values[i]].id;
-                        //users += values[i]+"@facebook.com, ";
-                    }
-                    
-                    FB.ui({
-                        method: 'send',
-                        link: 'http://kelvinzhu.com',
-                        caption: user.name + ' needs your suggestions about wedding!',
-                        to: users[0]
-                      }, function(response){alert(response.post_id);});
 
-                    alert("Your message is sent to "+ users);
+                    var final_emails = new Array();
+                    var final_users = new Array();
+
+                    for (var i in values) {
+                        //users[users.length] = friendsByUsername[values[i]].id;
+                        final_emails[final_emails.length] = values[i] + "@facebook.com";
+                        final_users[final_users.length] = friendsByUsername[values[i]].name;
+                    }
+
+                    for (var i in emails) {
+                        //users[users.length] = friendsByUsername[values[i]].id;
+                        final_emails[final_emails.length] = emails[i];
+                        final_users[final_users.length] = names[i];
+                    }
+
+                    $.post('/sendEmail/',{
+                            sender_name: 'test',
+                            sender_email: 'hses83081@gmail.com',
+                            message: "I am planning my wedding and need your help \n\
+                                        to select vendors. Could you do me a favor to \n\
+                                      answer my survey? ",
+                            name_list: JSON.stringify(final_users),
+                            email_list: JSON.stringify(final_emails)
+                        },
+                        function() {
+                            alert("Your message is sent to " + final_emails.join(","));
+                        },
+                        function() {
+                            alert("Fail to send emails!");
+                        }
+                    );
+
+
                 });
-                
+
                 String.prototype.trim = function()
                 {
                     return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
                 };
             });
-            
-            
-            
-           
 
-            -->
+
+
+
+
+  -->
         </script>
     </head>
     <body>
-       
+
         <div id="banner">
-            
+
         </div>
-       
-        
+
+
         <div class="load-button"></div>
         <select id="friend_select"></select>
         <div id="content">
@@ -215,6 +269,17 @@ and open the template in the editor.
                         </td>
                         <td>
                             <div id="recipients"> </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Add Email:
+                        </td>
+                        <td>
+                            <input type="text" id="email" name="email">
+                            Recipient's Name:
+                            <input type="text" id="name" name="name">
+                            <input type="button" id="add" value="add">
                         </td>
                     </tr>
                     <tr>
@@ -239,6 +304,6 @@ and open the template in the editor.
             </div>
         </div>
         <script src="http://connect.facebook.net/en_US/all.js"></script>
-        
+
     </body>
 </html>
