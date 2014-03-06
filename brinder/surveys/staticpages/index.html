@@ -221,16 +221,13 @@ and open the template in the editor.
                                       answer my survey? ",
                             name_list: JSON.stringify(final_users),
                             email_list: JSON.stringify(final_emails)
-                        },
+                        }).done(
                         function() {
                             alert("Your message is sent to " + final_emails.join(","));
-                        },
+                        }).fail(
                         function() {
                             alert("Fail to send emails!");
-                        }
-                    );
-
-
+                        });
                 });
 
                 String.prototype.trim = function()
