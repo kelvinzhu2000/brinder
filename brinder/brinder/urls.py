@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, include, url
 
 from surveys import views
-from email import sendEmail
+from emails import sendEmail
+from brinderregistration import register
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -22,6 +23,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/register/$', RegistrationView.as_view(), name='registration_register'),
+    url(r'^accounts/register/$', register.RegistrationView.as_view(), name='registration_register'),
     url(r'^accounts/', include('registration.backends.simple.urls'))
 )

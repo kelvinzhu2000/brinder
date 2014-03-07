@@ -3,6 +3,31 @@ import random
 import string
 #import surveys.models import Message
 
+import yaml
+import os
+
+def get_conf(yaml_path):
+    yfile = file(yaml_path, 'r')
+
+    yconf = yaml.load(yfile)
+    conf = {}
+
+    if 'common' in yconf:
+        common = yconf['common']
+
+        # everything else should map 1-to-1
+        conf.update(common)
+
+    return conf
+
+PROJECT_PATH = os.path.join(os.path.dirname(__file__), '../brinder')
+CONF_PATH = 'conf.yaml'
+
+ENV_CONF_PATH = os.path.join(PROJECT_PATH, CONF_PATH)
+
+env_conf            = get_conf(ENV_CONF_PATH)
+env_email_conf      = env_conf['email']
+
 class BrinderMail:
     """
         A simple email conponent. Initialize as 
@@ -11,12 +36,12 @@ class BrinderMail:
         After receivers submit surveys, sending thank you email to receivers, or sending notifications to
         senders, use sendAfterSurveyComplete() 
     """
-    __smtpHost = 'smtp.gmail.com:587' #SMTP server default to be gmail
-    __companyEmail = '' #company email address
-    __companyDomain = 'brinder.com' #domain of the company
-    __username = '' #account name of company email
-    __password = '' #input the password of company email
-    __subject = 'My wedding help request' #subject of the email
+    __smtpHost = env_email_conf['host'] #SMTP server default to be gmail
+    __companyEmail = env_email_conf['email'] #company email address
+    __companyDomain = env_email_conf['domain'] #domain of the company
+    __username = env_email_conf['user'] #account name of company email
+    __password = env_email_conf['password'] #input the password of company email
+    __subject = env_email_conf['subject'] #subject of the email
     
     #header template for email
     __header = 'From: {0} <{1}>\nTo: {2} <{3}>\nMIME-Version: 1.0\nContent-type: text/html\nSubject: {4}\n\n'
@@ -37,8 +62,8 @@ class BrinderMail:
         except smtplib.SMTPException as e:
             print "something wrong when log in"
 
-    def randomStr(self, size=7, charset=string.ascii_uppercase + string.digits):
-        return ''.join([random.choice(charset) for c in xrange(size)])
+    def randomStr(self, size=7, charSet=string.ascii_uppercase + string.digits):
+        return ''.join([random.choice(charSet) for c in xrange(size)])
 
 
     def composeRequestMail(self, toName, toEmail):

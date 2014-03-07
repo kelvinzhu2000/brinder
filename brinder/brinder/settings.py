@@ -8,7 +8,6 @@ def get_conf(yaml_path):
 
     yconf = yaml.load(yfile)
     conf = {}
-    db_conf = {}
 
     if 'common' in yconf:
         common = yconf['common']
@@ -155,7 +154,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'surveys',
-    'registration',
+    'emails',
+    'brinderregistration',
     south,
 )
 

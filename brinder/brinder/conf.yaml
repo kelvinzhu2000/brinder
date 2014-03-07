@@ -7,10 +7,17 @@ common:
         password: password
         host:     localhost
         port:     ''
+    email:
+        host:       smtp.gmail.com:587
+        domain:     'brinder.com'
+        email:      testemail@someplace.com
+        user:       testuser
+        password:   testpassword
+        subject:    'Test subject'
     debug: true
     media:
-        root:         '/usr/home/kelvin/tmp2/brinder/media'
-        dir:          '/usr/home/kelvin/tmp2/brinder/static'
+        root:         '/usr/home/kelvin/brinder/brinder/media'
+        dir:          '/usr/home/kelvin/brinder/brinder/static'
         url:          '/static/'
         admin_prefix: '/static/'
     use_runserver: true
