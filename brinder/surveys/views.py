@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.template import RequestContext, loader
+from django.contrib.auth.decorators import login_required
 
 from surveys.models import Message, Survey, Question
 from surveys.forms import SurveyForm
