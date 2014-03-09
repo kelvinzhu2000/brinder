@@ -2,7 +2,7 @@ import random
 import string
 from django.http import HttpResponse
 
-import BrinderMail
+from BrinderMail import BrinderMail
 
 def randomStr(size=7, charSet=string.ascii_uppercase + string.digits):
     return ''.join([random.choice(charSet) for c in xrange(size)])
