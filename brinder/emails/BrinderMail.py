@@ -74,12 +74,12 @@ class BrinderMail:
                 content = self.compose(receiver[0], receiver[1])
                 #print content
                 self.smtpObj.sendmail(BrinderMail.__companyEmail, receiver[1], content)
-        #print "successfully send to receiver {0}".format(receiver[1])
+            print "emails successfully sent"
+        except smtplib.SMTPException:
+            print "something wrong with emails sending"
+            raise smtplib.SMTPException
+        finally:
             self.smtpObj.quit()
-            return "successfully send email"
-        except smtplib.SMTPException as e:
-            self.smtpObj.quit()
-            return "someting wrong with email sending"
 
    #for test, also sample usage
 if __name__ == '__main__':

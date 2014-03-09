@@ -19,6 +19,47 @@ and open the template in the editor.
             var emails = new Array();
             var names = new Array();
             var user = null;
+            
+            /*
+             * Beginning of Chao's modification.
+             * Added csrf cookie setting functions, in order to make valid POST request
+             */
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            var csrftoken = getCookie('csrftoken');
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+            function sameOrigin(url) {
+                // test that a given url is a same-origin URL
+                // url could be relative or scheme relative or absolute
+                var host = document.location.host; // host + port
+                var protocol = document.location.protocol;
+                var sr_origin = '//' + host;
+                var origin = protocol + sr_origin;
+                // Allow absolute or scheme relative URLs to same origin
+                return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                // or any other URL that isn't scheme relative or absolute i.e relative.
+                !(/^(\/\/|http:|https:).*/.test(url));
+            }
+            /* End of Chao's Modifications */
+        
+            
             function parseUser(response) {
                 var user = new User(response.id, response.name, response.username,
                         response.gender, response.picture.data.url,
@@ -214,21 +255,37 @@ and open the template in the editor.
                         final_users[final_users.length] = names[i];
                     }
 
-                    $.post('/sendEmail/',{
+                    /* Modified ajax call to include csrf token */
+                    $.ajaxSetup({
+                        url: '/sendEmail/',
+                        type: 'POST',
+                        global: false,
+                        beforeSend: function(xhr, settings) {
+                                if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                                    // Send the token to same-origin, relative URLs only.
+                                    // Send the token only if the method warrants CSRF protection
+                                    // Using the CSRFToken value acquired earlier
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                        }
+                    });
+                                          
+                    $.ajax({data: {
                             sender_name: 'test',
                             sender_email: 'hses83081@gmail.com',
                             message: "I am planning my wedding and need your help \n\
                                         to select vendors. Could you do me a favor to \n\
                                       answer my survey? ",
-                            name_list: JSON.stringify(final_users),
-                            email_list: JSON.stringify(final_emails)
-                        }).done(
+                            name_list: ['chao yan', 'ace']//final_users,
+                            email_list: ['chaoyanla@gmail.com', 'hypersaltla@hotmail.com']//final_emails
+                        }}).done(
                         function() {
                             alert("Your message is sent to " + final_emails.join(","));
                         }).fail(
                         function() {
                             alert("Fail to send emails!");
                         });
+                                          
                 });
 
                 String.prototype.trim = function()

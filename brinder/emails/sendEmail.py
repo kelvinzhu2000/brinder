@@ -18,16 +18,16 @@ def sendToRecipients(request):
         
         message_body = message_body + "<p>Link: <a href='{0}'>{1}</a></p>".format(rootUrl + '/' + randomUrl, rootUrl)
         
-        names = request.POST['name_list']
-        emails = request.POST['email_list']
+        names = request.POST.getlist('name_list[]')
+        emails = request.POST.getlist('email_list[]')
         senderName = request.POST['sender_name'] #for test
         senderEmail = request.POST['sender_email']
         subject = "My wedding help request!"
 
         newMail = BrinderMail(names, emails, senderName, senderEmail, subject, message_body)
-        return HttpResponse(newMail.send())
+        newMail.send()
+        return HttpResponse()
 
-#def sendAfterSurvey(request):
 
 
     
