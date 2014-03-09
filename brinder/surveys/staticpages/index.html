@@ -39,6 +39,7 @@ and open the template in the editor.
                 }
                 return cookieValue;
             }
+        
             var csrftoken = getCookie('csrftoken');
             function csrfSafeMethod(method) {
                 // these HTTP methods do not require CSRF protection
@@ -276,7 +277,7 @@ and open the template in the editor.
                             message: "I am planning my wedding and need your help \n\
                                         to select vendors. Could you do me a favor to \n\
                                       answer my survey? ",
-                            name_list: ['chao yan', 'ace']//final_users,
+                            name_list: ['chao yan', 'ace'],//final_users,
                             email_list: ['chaoyanla@gmail.com', 'hypersaltla@hotmail.com']//final_emails
                         }}).done(
                         function() {
