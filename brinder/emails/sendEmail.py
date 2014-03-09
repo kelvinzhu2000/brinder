@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 import BrinderMail
 
-def randomStr(self, size=7, charSet=string.ascii_uppercase + string.digits):
+def randomStr(size=7, charSet=string.ascii_uppercase + string.digits):
     return ''.join([random.choice(charSet) for c in xrange(size)])
 
 
