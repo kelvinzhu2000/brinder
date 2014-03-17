@@ -67,34 +67,51 @@ class DropDownField(forms.ChoiceField):
 
 class OrderingWidget(forms.MultiWidget):
     def __init__(self, *args, **kwargs):
-        question = kwargs.pop('question')
+        self.question = kwargs.pop('question')
 
         widgets = []
-        raw_choices = question.orderingchoice_set.all()
+        raw_choices = self.question.orderingchoice_set.order_by('id').all()
         for raw_choice in raw_choices:
             widgets.append(forms.TextInput())
         super(OrderingWidget, self).__init__(widgets, *args, **kwargs)
 
     def decompress(self, value):
-        return value
+        if value:
+            return value
+        return [None for i, widget in enumerate(self.widgets)]
+
+    def format_output(self, rendered_widgets):
+        raw_choices = self.question.orderingchoice_set.order_by('id').all()
+        output = '<br>'
+
+        for i in range(len(rendered_widgets)):
+            output = "<span class='ordering_choice'>%s %s %s</span><br>" % (output, raw_choices[i].text, rendered_widgets[i])
+        return output
+
+#    def value_from_datadict(self, data, files, names):
+#        valuelist = [
+#            widget,value_from_datadict(data, files, name + '_%s' % i)
+#            for i, widget in enumerate(self.widgets)
+#        ]
 
 class OrderingField(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
         question = kwargs.pop('question')
 
+        list_fields = []
+        raw_choices = question.orderingchoice_set.order_by('id').all()
+        for raw_choice in raw_choices:
+            list_fields.append(forms.IntegerField(label=raw_choice.text))
+
         super(OrderingField, self).__init__(*args, **kwargs)
 
         self.label = question.question_text
         self.require_all_fields = False
-
-        fields = []
-        raw_choices = question.orderingchoice_set.all()
-        for raw_choice in raw_choices:
-            fields.append(forms.IntegerField(label=raw_choice.text, required=False))
-        self.fields = fields
+        self.fields = list_fields
+        self.widget = OrderingWidget(question=question)
 
     def compress(self, data_list):
-        pass
+        return data_list
 
 class RadioButtonField(forms.ChoiceField):
     def __init__(self, *args, **kwargs):

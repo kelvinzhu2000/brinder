@@ -97,7 +97,7 @@ class Answer(models.Model):
     message  = models.ForeignKey(Message)
 
     def __unicode__(self):
-        return "%s, %s" % (self.question.question_text, self.message.recipient.name)
+        return "%s, %s %s" % (self.question.question_text, self.message.recipient.first_name, self.message.recipient.last_name)
 
 class TrueFalseAnswer(Answer):
     value = models.BooleanField()
@@ -108,7 +108,7 @@ class DropDownAnswer(Answer):
 class OrderingAnswer(Answer):
     value = models.TextField(null=False)
 
-class OrderingChoiceRankings():
+class OrderingChoiceRankings(models.Model):
     answer = models.ForeignKey(OrderingAnswer)
     choice = models.ForeignKey(OrderingChoice)
     value  = models.IntegerField()
