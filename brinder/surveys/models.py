@@ -86,7 +86,7 @@ class FacebookId(models.Model):
 # An individual sent out survey message from a user to a recipient.
 class Message(models.Model):
     sender    = models.ForeignKey(User, related_name='sender')
-    recipient = models.ForeignKey(User, related_name='recipient')
+    recipient_email = models.CharField(max_length=200)
     survey    = models.ForeignKey(Survey)
     status    = models.CharField(max_length=30)
     url       = models.SlugField(max_length=30)
